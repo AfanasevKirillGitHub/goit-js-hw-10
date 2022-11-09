@@ -16,30 +16,31 @@ refs.searchInput.addEventListener('input', debounce(onSearch, DEBOUNCE_DELAY));
 
 function onSearch(event) {
   const inputText = event.target.value.trim();
-
-  fetchCountries(inputText)
-    .then(data => {
-      if (data.length === 1) {
-        refs.countryCard.innerHTML = renderCountryCard(data[0]);
-      } else if (data.length > 1 && data.length < 11) {
-        refs.searchList.innerHTML = renderCountryList(data);
-      } else {
-        Notify.info(
-          'Too many matches found. Please enter a more specific name.'
-        );
-      }
-    })
-    .catch(error => {
-      Notify.failure('Oops, there is no country with that name');
-      clearSearchRequest();
-    });
+  if (inputText) {
+    fetchCountries(inputText)
+      .then(data => {
+        if (data.length === 1) {
+          refs.countryCard.innerHTML = renderCountryCard(data[0]);
+        } else if (data.length > 1 && data.length < 11) {
+          refs.searchList.innerHTML = renderCountryList(data);
+        } else {
+          Notify.info(
+            'Too many matches found. Please enter a more specific name.'
+          );
+        }
+      })
+      .catch(error => {
+        Notify.failure('Oops, there is no country with that name');
+        clearSearchRequest();
+      });
+  }
 }
 
 // =============================================================================================
 // Сторонние функции для отросивки
 
 function renderCountryCard({ languages, flags, name, capital, population }) {
-  refs.countryCard.innerHTML = '';
+  refs.searchList.innerHTML = '';
 
   return `<div class="country-card">
   <li class="country-card__item">
@@ -74,4 +75,3 @@ function clearSearchRequest() {
 
 // ======================================
 // Оформить
-// Проверить при остановке ввода и продолжении работоспособность
